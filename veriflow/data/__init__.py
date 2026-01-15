@@ -20,6 +20,11 @@ from veriflow.data.overlap import (
     check_train_eval_overlap,
     check_all_splits_overlap,
 )
+from veriflow.data.drift import (
+    compute_distribution_stats,
+    compare_distributions,
+    check_drift_vs_baseline,
+)
 
 __all__ = [
     "load_dataset",
@@ -38,4 +43,7 @@ __all__ = [
     "find_overlap",
     "check_train_eval_overlap",
     "check_all_splits_overlap",
+    "compute_distribution_stats",
+    "compare_distributions",
+    "check_drift_vs_baseline",
 ]
