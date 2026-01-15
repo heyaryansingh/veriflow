@@ -40,7 +40,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: Implement data checks (schema consistency, dataset fingerprinting, exact overlap detection, distribution deltas vs baseline)
 **Depends on**: Phase 1
 **Research**: Unlikely (standard data validation patterns)
-**Plans**: TBD
+**Plans**: 6 plans completed
+**Status**: Complete
 
 ### Phase 3: Classic ML Evaluation
 **Goal**: Implement classic ML evaluation harness (accuracy, F1, ROC-AUC, calibration) with deterministic reruns, bootstrap confidence intervals, and paired comparison vs baseline
