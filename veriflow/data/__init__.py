@@ -25,6 +25,7 @@ from veriflow.data.drift import (
     compare_distributions,
     check_drift_vs_baseline,
 )
+from veriflow.data.checks import run_data_checks
 
 __all__ = [
     "load_dataset",
@@ -46,4 +47,5 @@ __all__ = [
     "compute_distribution_stats",
     "compare_distributions",
     "check_drift_vs_baseline",
+    "run_data_checks",
 ]
