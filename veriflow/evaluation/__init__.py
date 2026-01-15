@@ -18,6 +18,12 @@ from veriflow.evaluation.bootstrap import (
     bootstrap_f1,
     bootstrap_roc_auc,
 )
+from veriflow.evaluation.results import (
+    EvaluationResult,
+    save_evaluation_result,
+    load_evaluation_result,
+    compute_evaluation_result,
+)
 
 __all__ = [
     "compute_accuracy",
@@ -32,4 +38,8 @@ __all__ = [
     "bootstrap_accuracy",
     "bootstrap_f1",
     "bootstrap_roc_auc",
+    "EvaluationResult",
+    "save_evaluation_result",
+    "load_evaluation_result",
+    "compute_evaluation_result",
 ]
