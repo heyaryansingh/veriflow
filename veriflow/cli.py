@@ -130,11 +130,7 @@ def run():
             y_true = data.get("y_true")
             y_pred = data.get("y_pred")
             y_scores = data.get("y_scores", None)
-        else:
-            # For MVP, skip ML evaluation if data not found
-            click.echo("Evaluation data not found. Skipping ML evaluation.")
-            click.echo("Create eval_data.npz with y_true, y_pred, y_scores arrays to enable ML evaluation.")
-        else:
+            
             try:
                 eval_result = run_ml_evaluation(config, y_true, y_pred, y_scores)
                 
