@@ -15,6 +15,11 @@ from veriflow.data.fingerprint import (
     load_fingerprint,
     compare_fingerprints,
 )
+from veriflow.data.overlap import (
+    find_overlap,
+    check_train_eval_overlap,
+    check_all_splits_overlap,
+)
 
 __all__ = [
     "load_dataset",
@@ -30,4 +35,7 @@ __all__ = [
     "save_fingerprint",
     "load_fingerprint",
     "compare_fingerprints",
+    "find_overlap",
+    "check_train_eval_overlap",
+    "check_all_splits_overlap",
 ]
