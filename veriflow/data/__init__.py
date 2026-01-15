@@ -8,6 +8,13 @@ from veriflow.data.schema import (
     validate_schema_consistency,
     check_schema_consistency,
 )
+from veriflow.data.fingerprint import (
+    DatasetFingerprint,
+    compute_fingerprint,
+    save_fingerprint,
+    load_fingerprint,
+    compare_fingerprints,
+)
 
 __all__ = [
     "load_dataset",
@@ -18,4 +25,9 @@ __all__ = [
     "compare_schemas",
     "validate_schema_consistency",
     "check_schema_consistency",
+    "DatasetFingerprint",
+    "compute_fingerprint",
+    "save_fingerprint",
+    "load_fingerprint",
+    "compare_fingerprints",
 ]
