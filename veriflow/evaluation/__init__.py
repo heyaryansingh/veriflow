@@ -30,6 +30,7 @@ from veriflow.evaluation.comparison import (
     is_significant_change,
     compute_metric_delta,
 )
+from veriflow.evaluation.evaluator import run_ml_evaluation
 
 __all__ = [
     "compute_accuracy",
@@ -52,4 +53,5 @@ __all__ = [
     "compare_vs_baseline",
     "is_significant_change",
     "compute_metric_delta",
+    "run_ml_evaluation",
 ]
