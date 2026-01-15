@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veriflow"
+version = "0.1.0"
+description = "An opinionated verification harness that enforces data, model, evaluation, and product-level correctness for ML and LLM systems before they ship"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Veriflow Contributors"}
+]
+keywords = ["ml", "llm", "verification", "testing", "ci"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "click>=8.1.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+veriflow = "veriflow.cli:main"
