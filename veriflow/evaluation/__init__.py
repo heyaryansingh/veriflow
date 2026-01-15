@@ -24,6 +24,12 @@ from veriflow.evaluation.results import (
     load_evaluation_result,
     compute_evaluation_result,
 )
+from veriflow.evaluation.comparison import (
+    compare_results,
+    compare_vs_baseline,
+    is_significant_change,
+    compute_metric_delta,
+)
 
 __all__ = [
     "compute_accuracy",
@@ -42,4 +48,8 @@ __all__ = [
     "save_evaluation_result",
     "load_evaluation_result",
     "compute_evaluation_result",
+    "compare_results",
+    "compare_vs_baseline",
+    "is_significant_change",
+    "compute_metric_delta",
 ]
