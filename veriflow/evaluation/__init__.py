@@ -11,6 +11,13 @@ from veriflow.evaluation.deterministic import (
     get_evaluation_seed,
     ensure_deterministic,
 )
+from veriflow.evaluation.bootstrap import (
+    bootstrap_metric,
+    bootstrap_metrics,
+    bootstrap_accuracy,
+    bootstrap_f1,
+    bootstrap_roc_auc,
+)
 
 __all__ = [
     "compute_accuracy",
@@ -20,4 +27,9 @@ __all__ = [
     "set_deterministic_seed",
     "get_evaluation_seed",
     "ensure_deterministic",
+    "bootstrap_metric",
+    "bootstrap_metrics",
+    "bootstrap_accuracy",
+    "bootstrap_f1",
+    "bootstrap_roc_auc",
 ]
