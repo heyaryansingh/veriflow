@@ -50,7 +50,7 @@ def init(force: bool):
     # Create directory structure
     create_project_structure(base_path)
     
-    click.echo("\n✓ Veriflow project initialized!")
+    click.echo("\nVeriflow project initialized!")
     click.echo("\nNext steps:")
     click.echo("  1. Edit veriflow.yaml to configure your project")
     click.echo("  2. Run 'veriflow run' to execute verification checks")
