@@ -1,0 +1,52 @@
+# Veriflow Configuration Example
+# Copy this file to veriflow.yaml and customize for your project
+
+# Project metadata
+project:
+  name: "example-ai-app"
+  type: "llm_classification"  # Options: llm_classification, tabular, vision, rag
+
+# Baseline reference for comparisons
+baseline:
+  ref: "main"  # Git branch/tag/commit to compare against
+
+# Data verification checks
+data:
+  checks:
+    - schema_consistency
+    - no_train_eval_overlap
+    - drift_vs_baseline
+
+# Model configuration
+model:
+  framework: "sklearn"  # Options: sklearn, pytorch, hf, api
+  deterministic: true
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    accuracy:
+      min_improvement: 0.0
+    f1:
+      max_regression: 0.005
+    calibration_ece:
+      max_value: 0.04
+  statistical_tests:
+    enabled: true
+    method: "bootstrap"
+
+# UI/frontend verification (optional)
+ui:
+  enabled: true
+  runner: "playwright"
+  base_url: "http://localhost:3000"
+  start:
+    frontend: ["pnpm dev"]
+    backend: ["uvicorn api:app"]
+  contracts:
+    enabled: true
+
+# CI gate configuration
+gates:
+  fail_on_regression: true
+  fail_on_schema_change: true
