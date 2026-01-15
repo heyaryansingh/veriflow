@@ -4,9 +4,11 @@ import sys
 import shutil
 from pathlib import Path
 import click
+import numpy as np
 from veriflow.init import create_project_structure
 from veriflow.config import get_config
 from veriflow.data.checks import run_data_checks
+from veriflow.evaluation.evaluator import run_ml_evaluation
 
 
 @click.group()
@@ -71,13 +73,15 @@ def run():
         click.echo(f"Error loading config: {e}", err=True)
         sys.exit(1)
     
+    overall_passed = True
+    
+    # Run data checks
     click.echo("Running data verification checks...")
     click.echo("")
     
-    # Run data checks
     data_result = run_data_checks(config)
     
-    # Print results
+    # Print data check results
     if data_result["results"]:
         for check_name, result in data_result["results"].items():
             status = "✓" if result.get("passed", False) else "✗"
@@ -102,13 +106,66 @@ def run():
                             click.echo(f"    - {col.get('column')}: {col.get('details', 'N/A')}")
     else:
         click.echo("No data checks configured in veriflow.yaml")
-        click.echo("Add checks to data.checks section to enable verification")
+    
+    if not data_result["passed"]:
+        overall_passed = False
     
     click.echo("")
-    click.echo(f"Summary: {data_result['summary']}")
+    click.echo(f"Data checks: {data_result['summary']}")
+    click.echo("")
     
-    # Exit with error code if checks failed
-    if not data_result["passed"]:
+    # Run ML evaluation if model config exists
+    if config.model is not None:
+        click.echo("Running ML evaluation...")
+        click.echo("")
+        
+        # Try to load evaluation data from common locations
+        # For now, we'll need user to provide data paths or load from files
+        # This is a simplified version - in practice, users would provide data
+        eval_data_path = Path("eval_data.npz")
+        
+        if eval_data_path.exists():
+            # Load from numpy file
+            data = np.load(eval_data_path)
+            y_true = data.get("y_true")
+            y_pred = data.get("y_pred")
+            y_scores = data.get("y_scores", None)
+        else:
+            # For MVP, skip ML evaluation if data not found
+            click.echo("Evaluation data not found. Skipping ML evaluation.")
+            click.echo("Create eval_data.npz with y_true, y_pred, y_scores arrays to enable ML evaluation.")
+        else:
+            try:
+                eval_result = run_ml_evaluation(config, y_true, y_pred, y_scores)
+                
+                # Print metrics
+                click.echo("Metrics:")
+                for metric_name, value in eval_result["result"].metrics.items():
+                    ci = eval_result["result"].bootstrap_cis.get(metric_name, {})
+                    ci_str = f" [{ci.get('ci_lower', 0):.4f}, {ci.get('ci_upper', 0):.4f}]" if ci else ""
+                    click.echo(f"  {metric_name}: {value:.4f}{ci_str}")
+                
+                # Print comparison if baseline exists
+                if eval_result["comparison"]:
+                    click.echo("")
+                    click.echo("Comparison vs baseline:")
+                    for comp in eval_result["comparison"]["comparisons"]:
+                        status_icon = "✓" if comp["status"] in ["improved", "unchanged"] else "✗"
+                        click.echo(f"  {status_icon} {comp['details']}")
+                
+                click.echo("")
+                click.echo(f"ML evaluation: {eval_result['summary']}")
+                
+                if not eval_result["passed"]:
+                    overall_passed = False
+            except Exception as e:
+                click.echo(f"Error running ML evaluation: {e}", err=True)
+                overall_passed = False
+    
+    click.echo("")
+    
+    # Exit with error code if any checks failed
+    if not overall_passed:
         sys.exit(1)
 
 
