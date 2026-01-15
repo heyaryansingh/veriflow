@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2025-01-27)
 
 **Core value:** Make **trust a build artifact**, not a feeling. Veriflow must catch failures before merge, explain what broke, and point to the exact regression. If everything else fails, this must work.
-**Current focus:** Phase 2 — Data Verification
+**Current focus:** Phase 3 — Classic ML Evaluation
 
 ## Current Position
 
-Phase: 2 of 11 (Data Verification)
-Plan: 6 of 6 in current phase
-Status: Phase complete
-Last activity: 2025-01-27 — Completed 02-06-PLAN.md
+Phase: 3 of 11 (Classic ML Evaluation)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2025-01-27 — Phase 3 planned
 
 Progress: ██████░░░░ 18%
 
