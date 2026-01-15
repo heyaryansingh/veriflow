@@ -36,6 +36,7 @@ class EvaluationConfig(BaseModel):
     """Evaluation configuration."""
     metrics: dict = Field(default_factory=dict, description="Metric definitions with thresholds")
     statistical_tests: StatisticalTestsConfig = Field(default_factory=StatisticalTestsConfig)
+    seed: Optional[int] = Field(default=42, description="Random seed for deterministic evaluation")
 
 
 class UIConfig(BaseModel):
