@@ -47,7 +47,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Goal**: Implement classic ML evaluation harness (accuracy, F1, ROC-AUC, calibration) with deterministic reruns, bootstrap confidence intervals, and paired comparison vs baseline
 **Depends on**: Phase 2
 **Research**: Unlikely (standard ML metrics, bootstrap is well-established)
-**Plans**: TBD
+**Plans**: 6 plans completed
+**Status**: Complete
 
 ### Phase 4: LLM/RAG Evaluation
 **Goal**: Implement LLM/RAG evaluation (prompt/version hashing, dataset replay, judge model support, structured output validation, optional human annotation hooks)
