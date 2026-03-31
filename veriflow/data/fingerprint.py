@@ -1,9 +1,13 @@
-"""Dataset fingerprinting for change detection."""
+"""Dataset fingerprinting for change detection.
 
-from dataclasses import dataclass, asdict
-from datetime import datetime
+This module provides functionality to create deterministic fingerprints of datasets,
+enabling change detection between runs without comparing full data contents.
+"""
+
+from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 import hashlib
 import json
 import pandas as pd
@@ -74,11 +78,11 @@ def compute_fingerprint(df: pd.DataFrame) -> DatasetFingerprint:
         row_count=row_count,
         column_hash=column_hash,
         content_hash=content_hash,
-        timestamp=datetime.now()
+        timestamp=datetime.now(timezone.utc)
     )
 
 
-def save_fingerprint(path: Path, fingerprint: DatasetFingerprint) -> None:
+def save_fingerprint(path: Union[str, Path], fingerprint: DatasetFingerprint) -> None:
     """Saves fingerprint to JSON file.
     
     Args:
@@ -102,7 +106,7 @@ def save_fingerprint(path: Path, fingerprint: DatasetFingerprint) -> None:
         json.dump(fingerprint.to_dict(), f, indent=2)
 
 
-def load_fingerprint(path: Path) -> Optional[DatasetFingerprint]:
+def load_fingerprint(path: Union[str, Path]) -> Optional[DatasetFingerprint]:
     """Loads fingerprint from JSON file.
     
     Args:
