@@ -1,4 +1,28 @@
-"""CLI entry point for Veriflow."""
+"""CLI entry point for Veriflow ML verification harness.
+
+Provides command-line interface for running ML model verification including:
+- Data quality checks (overlap detection, drift analysis, schema validation)
+- Evaluation metrics computation with bootstrap confidence intervals
+- Baseline comparison for regression testing
+
+Commands:
+    init     - Initialize a new Veriflow project with config template
+    check    - Run data verification checks (overlap, drift, schema)
+    metrics  - Compute ML evaluation metrics from prediction data
+    run      - Run complete verification suite
+    compare  - Compare current results against baseline
+
+Example:
+    Initialize and run checks::
+
+        $ veriflow init
+        $ veriflow check --verbose
+        $ veriflow metrics -d eval_data.npz
+
+    Complete verification pipeline::
+
+        $ veriflow run
+"""
 
 import shutil
 import sys
@@ -331,8 +355,11 @@ def compare(current: str, baseline: str):
         sys.exit(1)
 
 
-def main():
-    """Main entry point for CLI."""
+def main() -> None:
+    """Main entry point for Veriflow CLI.
+
+    Called when running ``python -m veriflow`` or the ``veriflow`` command.
+    """
     cli()
 
 
