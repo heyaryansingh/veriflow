@@ -1,4 +1,24 @@
-"""Configuration loading and validation for Veriflow."""
+"""Configuration loading and validation for Veriflow.
+
+This module handles loading, validating, and discovering Veriflow configuration
+files. Supports both veriflow.yaml and .veriflow.yaml (hidden) config files.
+
+The module searches up the directory tree from the current working directory
+to find configuration files, similar to how tools like git find .gitconfig.
+
+Functions:
+    load_config: Load and validate a config file from a specific path.
+    find_config_file: Search directory tree for veriflow.yaml.
+    get_config: Convenience function to find and load config.
+
+Example:
+    >>> from veriflow.config import get_config
+    >>> config = get_config()  # Auto-discovers config file
+    >>> print(config.model.path)
+
+    >>> from veriflow.config import load_config
+    >>> config = load_config("./custom-config.yaml")
+"""
 
 import yaml
 from pathlib import Path
