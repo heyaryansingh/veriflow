@@ -44,6 +44,7 @@ uv run veriflow compare --current current --baseline baseline
 - `schema_consistency`
 - `no_train_eval_overlap`
 - `drift_vs_baseline`
+- `missing_values`
 - accuracy, F1, ROC-AUC, and calibration ECE
 - bootstrap confidence intervals for supported metrics
 

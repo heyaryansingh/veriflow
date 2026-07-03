@@ -6,6 +6,7 @@ from veriflow.config import VeriflowConfig
 from veriflow.data.schema import check_schema_consistency
 from veriflow.data.overlap import check_all_splits_overlap
 from veriflow.data.drift import check_drift_vs_baseline
+from veriflow.data.missing_values import check_missing_values_all_splits
 
 
 def run_data_checks(
@@ -63,6 +64,9 @@ def run_data_checks(
                 results[check_name] = result
             elif check_name == "drift_vs_baseline":
                 result = _check_drift(config, dataset_paths)
+                results[check_name] = result
+            elif check_name == "missing_values":
+                result = _check_missing_values(dataset_paths)
                 results[check_name] = result
             else:
                 errors.append(f"Unknown check: {check_name}")
@@ -183,9 +187,26 @@ def _check_drift(config: VeriflowConfig, dataset_paths: dict[str, str | Path]) -
             })
     
     all_passed = all(r["passed"] for r in drift_results)
-    
+
     return {
         "passed": all_passed,
         "message": f"Drift check against baseline ({baseline_ref})",
         "drift_results": drift_results
+    }
+
+
+def _check_missing_values(dataset_paths: dict[str, str | Path]) -> dict:
+    """Wrapper for missing value rate check."""
+    if not dataset_paths:
+        return {
+            "passed": True,
+            "message": "No datasets found for missing value check"
+        }
+
+    result = check_missing_values_all_splits(dataset_paths)
+
+    return {
+        "passed": result["passed"],
+        "message": result["summary"],
+        "splits": result.get("splits", {})
     }
