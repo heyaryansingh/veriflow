@@ -129,9 +129,15 @@ def compute_calibration_ece(y_true, y_probs, n_bins: int = 10) -> float:
     
     ece = 0.0
     
-    for bin_lower, bin_upper in zip(bin_lowers, bin_uppers):
-        # Find samples in this bin
-        in_bin = (y_probs > bin_lower) & (y_probs <= bin_upper)
+    for bin_index, (bin_lower, bin_upper) in enumerate(zip(bin_lowers, bin_uppers)):
+        # Find samples in this bin. Bins are half-open as (lower, upper], so the
+        # first one has to include its lower edge: otherwise a prediction of
+        # exactly 0.0 falls into no bin at all and drops out of the weighted
+        # average, understating ECE for any model that outputs hard negatives.
+        if bin_index == 0:
+            in_bin = (y_probs >= bin_lower) & (y_probs <= bin_upper)
+        else:
+            in_bin = (y_probs > bin_lower) & (y_probs <= bin_upper)
         prop_in_bin = in_bin.mean()
         
         if prop_in_bin > 0:
