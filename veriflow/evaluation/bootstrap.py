@@ -7,7 +7,6 @@ from veriflow.evaluation.metrics import (
     compute_f1,
     compute_roc_auc,
 )
-from veriflow.evaluation.deterministic import set_deterministic_seed
 
 
 def bootstrap_metric(
@@ -46,9 +45,10 @@ def bootstrap_metric(
             "confidence": confidence
         }
     
-    # Set seed if provided
-    if seed is not None:
-        set_deterministic_seed(seed)
+    # A local Generator keeps resampling reproducible without seeding - and so
+    # without clobbering - the global numpy/random/torch state that the caller
+    # is relying on elsewhere in the evaluation run.
+    rng = np.random.default_rng(seed)
     
     # Compute original metric
     metric_value = float(metric_func(y_true, y_pred))
@@ -59,7 +59,7 @@ def bootstrap_metric(
     
     for _ in range(n_bootstrap):
         # Resample with replacement
-        indices = np.random.choice(n_samples, size=n_samples, replace=True)
+        indices = rng.integers(0, n_samples, size=n_samples)
         y_true_boot = y_true[indices]
         y_pred_boot = y_pred[indices]
         
@@ -194,57 +194,6 @@ def bootstrap_roc_auc(
     Returns:
         Dictionary with ROC-AUC value and CI bounds
     """
-    y_true = np.array(y_true)
-    y_scores = np.array(y_scores)
-    
-    if len(y_true) == 0:
-        return {
-            "metric_value": 0.0,
-            "ci_lower": 0.0,
-            "ci_upper": 0.0,
-            "confidence": confidence
-        }
-    
-    # Set seed if provided
-    if seed is not None:
-        set_deterministic_seed(seed)
-    
-    # Compute original metric
-    metric_value = float(compute_roc_auc(y_true, y_scores))
-    
-    # Bootstrap resampling
-    n_samples = len(y_true)
-    bootstrap_values = []
-    
-    for _ in range(n_bootstrap):
-        # Resample with replacement
-        indices = np.random.choice(n_samples, size=n_samples, replace=True)
-        y_true_boot = y_true[indices]
-        y_scores_boot = y_scores[indices] if y_scores.ndim == 1 else y_scores[indices]
-        
-        # Compute metric on resampled data
-        try:
-            boot_value = float(compute_roc_auc(y_true_boot, y_scores_boot))
-            bootstrap_values.append(boot_value)
-        except Exception:
-            continue
-    
-    if not bootstrap_values:
-        return {
-            "metric_value": metric_value,
-            "ci_lower": metric_value,
-            "ci_upper": metric_value,
-            "confidence": confidence
-        }
-    
-    # Compute confidence interval
-    alpha = 1 - confidence
-    ci_lower = float(np.percentile(bootstrap_values, 100 * alpha / 2))
-    ci_upper = float(np.percentile(bootstrap_values, 100 * (1 - alpha / 2)))
-    
-    return {
-        "metric_value": metric_value,
-        "ci_lower": ci_lower,
-        "ci_upper": ci_upper,
-        "confidence": confidence
-    }
+    return bootstrap_metric(
+        y_true, y_scores, compute_roc_auc, n_bootstrap, confidence, seed
+    )
