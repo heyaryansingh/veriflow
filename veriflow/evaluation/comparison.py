@@ -24,12 +24,51 @@ def is_significant_change(current_ci: dict, baseline_ci: dict) -> bool:
     return (current_lower > baseline_upper) or (current_upper < baseline_lower)
 
 
-def compute_metric_delta(current_value: float, baseline_value: float) -> dict:
+# Metrics where a smaller number is the better result. Everything else
+# (accuracy, F1, ROC-AUC, ...) is treated as higher-is-better. Names are
+# matched case-insensitively against these substrings, so "calibration_ece",
+# "val_ece" and "test_brier" all resolve correctly.
+LOWER_IS_BETTER_MARKERS = (
+    "ece",
+    "brier",
+    "loss",
+    "error",
+    "mae",
+    "mse",
+    "rmse",
+    "perplexity",
+)
+
+
+def is_lower_better(metric_name: str) -> bool:
+    """Reports whether a smaller value of this metric is an improvement.
+
+    Args:
+        metric_name: Name of the metric, e.g. "accuracy" or "calibration_ece"
+
+    Returns:
+        True if lower values are better for this metric
+    """
+    name = str(metric_name).lower()
+    tokens = set(name.replace("-", "_").split("_"))
+    return any(
+        marker in tokens or name == marker or name.endswith(marker)
+        for marker in LOWER_IS_BETTER_MARKERS
+    )
+
+
+def compute_metric_delta(
+    current_value: float,
+    baseline_value: float,
+    lower_is_better: bool = False
+) -> dict:
     """Computes delta and relative change between two metric values.
     
     Args:
         current_value: Current metric value
         baseline_value: Baseline metric value
+        lower_is_better: True for error-style metrics such as ECE or log loss,
+            where a smaller value is the better result
         
     Returns:
         Dictionary with: delta (absolute change), relative_change (percentage), improved (bool)
@@ -41,8 +80,7 @@ def compute_metric_delta(current_value: float, baseline_value: float) -> dict:
     else:
         relative_change = (delta / abs(baseline_value)) * 100
     
-    # For metrics where higher is better (accuracy, F1, ROC-AUC)
-    improved = delta > 0
+    improved = delta < 0 if lower_is_better else delta > 0
     
     return {
         "delta": delta,
@@ -82,8 +120,11 @@ def compare_results(
         current_value = current.metrics[metric_name]
         baseline_value = baseline.metrics[metric_name]
         
-        # Compute delta
-        delta_info = compute_metric_delta(current_value, baseline_value)
+        # Compute delta. Calibration error and other loss-style metrics move
+        # the opposite way from accuracy, so a drop there is an improvement.
+        delta_info = compute_metric_delta(
+            current_value, baseline_value, lower_is_better=is_lower_better(metric_name)
+        )
         
         # Check if significant change (using CIs if available)
         significant = False

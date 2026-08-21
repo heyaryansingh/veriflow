@@ -29,6 +29,7 @@ from veriflow.evaluation.comparison import (
     compare_vs_baseline,
     is_significant_change,
     compute_metric_delta,
+    is_lower_better,
 )
 from veriflow.evaluation.evaluator import run_ml_evaluation
 
@@ -53,5 +54,6 @@ __all__ = [
     "compare_vs_baseline",
     "is_significant_change",
     "compute_metric_delta",
+    "is_lower_better",
     "run_ml_evaluation",
 ]
