@@ -26,8 +26,8 @@ def compute_distribution_stats(df: pd.DataFrame, column: str) -> dict:
     series = df[column]
     dtype = str(series.dtype)
     
-    # Check if numeric
-    if pd.api.types.is_numeric_dtype(series):
+    # Check if numeric (bool is categorical: quantile/std fail on it)
+    if pd.api.types.is_numeric_dtype(series) and not pd.api.types.is_bool_dtype(series):
         stats = {
             "type": "numeric",
             "mean": float(series.mean()) if not series.empty else 0.0,
