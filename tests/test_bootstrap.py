@@ -132,3 +132,10 @@ def test_bootstrap_metrics_covers_every_metric(labels):
     assert set(results) == {"accuracy", "inverse"}
     for value in results.values():
         assert value["ci_lower"] <= value["metric_value"] <= value["ci_upper"]
+
+
+def test_rejects_invalid_confidence_and_length_mismatch():
+    with pytest.raises(ValueError, match="confidence"):
+        bootstrap_accuracy([0, 1, 1], [0, 1, 1], confidence=95)
+    with pytest.raises(ValueError, match="same length"):
+        bootstrap_metric([0, 1, 1], [0, 1, 1, 0], lambda t, p: 0.5, n_bootstrap=5)

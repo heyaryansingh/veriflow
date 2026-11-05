@@ -37,6 +37,16 @@ def bootstrap_metric(
     y_true = np.array(y_true)
     y_pred = np.array(y_pred)
     
+    # Fail loudly: a percent-style confidence (95) or mismatched inputs would
+    # otherwise surface as an opaque percentile/IndexError - or, for a longer
+    # y_pred, silently drop the extra rows from every resample.
+    if not 0 < confidence < 1:
+        raise ValueError(f"confidence must be in (0, 1), got {confidence}")
+    if len(y_true) != len(y_pred):
+        raise ValueError(
+            f"y_true and y_pred must have the same length, got {len(y_true)} and {len(y_pred)}"
+        )
+    
     if len(y_true) == 0:
         return {
             "metric_value": 0.0,
