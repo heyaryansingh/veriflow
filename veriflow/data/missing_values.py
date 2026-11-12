@@ -39,7 +39,7 @@ def check_missing_values(
     if flagged_columns:
         summary = (
             f"{len(flagged_columns)} column(s) exceed missing value "
-            f"threshold of {threshold:.0%}: {', '.join(flagged_columns)}"
+            f"threshold of {threshold:.0%}: {', '.join(map(str, flagged_columns))}"
         )
     else:
         summary = f"All columns within missing value threshold of {threshold:.0%}"
