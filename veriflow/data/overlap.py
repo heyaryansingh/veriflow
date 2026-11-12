@@ -57,8 +57,14 @@ def find_overlap(
     
     # Find overlap using merge
     # Use indicator to identify rows that exist in both
-    merged = df1[common_cols].merge(
-        df2[common_cols],
+    left, right = df1[common_cols].copy(), df2[common_cols].copy()
+    for col in common_cols:
+        # Mixed object/non-object dtypes (e.g. int ids vs string ids) make merge raise;
+        # compare them as strings so the leak is still detected.
+        if (left[col].dtype == object) != (right[col].dtype == object):
+            left[col], right[col] = left[col].astype(str), right[col].astype(str)
+    merged = left.merge(
+        right,
         how="inner",
         indicator=True
     )
