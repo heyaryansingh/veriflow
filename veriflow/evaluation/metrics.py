@@ -108,11 +108,19 @@ def compute_calibration_ece(y_true, y_probs, n_bins: int = 10) -> float:
     Returns:
         Expected Calibration Error (float between 0 and 1)
     """
+    if n_bins < 1:
+        raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    if len(y_true) != len(y_probs):
+        raise ValueError(
+            f"y_true and y_probs must have the same length, got {len(y_true)} and {len(y_probs)}"
+        )
     if len(y_true) == 0:
         return 0.0
     
     y_true = np.array(y_true)
     y_probs = np.array(y_probs)
+    if np.isnan(y_probs.astype(float)).any():
+        raise ValueError("y_probs contains NaN")
     
     # Handle binary classification only
     if y_probs.ndim > 1:
